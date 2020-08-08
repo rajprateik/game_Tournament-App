@@ -1,0 +1,191 @@
+onst OtpScreen = ({navigation, ref, autoFocus}) => {
+  const [pin1, setPin1] = useState(['']);
+  const [pin2, setPin2] = useState(['']);
+  const [pin3, setPin3] = useState(['']);
+  const [pin4, setPin4] = useState(['']);
+
+  // const {getAccountId} = React.useContext(AuthContext);
+
+  const createAccount = () => {
+    const pin = pin1.concat(pin2, pin3, pin4);
+    const formData = new FormData();
+
+    formData.append('otp', pin);
+    formData.append('account-id', getAccountId);
+
+    fetch('http://assaultncash.com/api/verify-otp.php', {
+      headers: {'Content-Type': 'multipart/form-data'},
+      method: 'POST',
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(res => {
+        console.log(res);
+        if (res.response === 0) {
+          // otpVerify({accountId: res['account-di']});
+        } else {
+        }
+        this.setState();
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  //     method: 'POST',
+  //     headers: {'Content-Type': 'multipart/form-data'},
+  //     body: formData,
+  //   };
+  //   fetch(
+  //     '',
+  //     requestOptions,
+  //   )
+  //     .then(response => response.json())
+  //     .then(res => {
+  //       if (res.verfication_status === 1) {
+  //         signIn({naccoutId: res['account-id'], });
+  //       } else {
+  //         Alert.alert('Invalid User!', 'Username or password is incorrect.', [
+  //           {text: 'Okay'},
+  //         ]);
+  //       }
+  //     })
+  //     .catch(error => {
+  //       console.error(error);
+  //     });
+  // };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.text_header}>OTP Verification!</Text>
+      </View>
+      <Animatable.View animation="fadeInUpBig" style={styles.footer}>
+        <FontAwesome
+          name="mobile-phone"
+          color="#004e92"
+          size={100}
+          style={{marginHorizontal: 135}}
+        />
+
+        <Text style={styles.text_footer}>
+          Enter the 5 digit otp we've sent to your mobile number
+        </Text>
+        <View
+          style={{
+            flex: 0.6,
+            justifyContent: 'space-evenly',
+            flexDirection: 'row',
+          }}>
+          <TextInput
+            refs={ref}
+            autoFocus={autoFocus}
+            secureTextEntry={true}
+            keyboardType="numeric"
+            maxLength={1}
+            onChangeText={pin1 => {
+              setPin1({pin1: pin1});
+            }}
+            value={pin1}
+            ref={'pin1ref'}
+            style={styles.txt}
+          />
+          <TextInput
+            ref={'pin2ref'}
+            onChangeText={pin2 => {
+              setPin2({pin2: pin2});
+              if (pin2 !== '') {
+                this.refs.pin3ref.focus();
+              }
+            }}
+            value={pin2}
+            style={styles.txt}
+            maxLength={1}
+          />
+          <TextInput
+            onChangeText={pin3 => {
+              setPin3({pin3: pin3});
+              if (pin3 !== '') {
+                this.refs.pin4ref.focus();
+              }
+            }}
+            value={pin3}
+            style={styles.txt}
+            maxLength={1}
+            ref={'pin3ref'}
+          />
+          <TextInput
+            onChangeText={pin4 => {
+              setPin4({pin4: pin4});
+            }}
+            value={pin4}
+            style={styles.txt}
+            maxLength={1}
+            ref={'pin4ref'}
+          />
+        </View>
+        <View style={{flex: 0.3}}>
+          <TouchableOpacity
+            style={styles.signIn}
+            onPress={() => createAccount()}>
+            <LinearGradient
+              colors={['#000428', '#004e92']}
+              style={styles.signIn}>
+              <Text
+                style={[
+                  styles.textSign,
+                  {
+                    color: '#fff',
+                  },
+                ]}>
+                Verify OTP
+              </Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+      </Animatable.View>
+    </View>
+  );
+};
+export default OtpScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#004e92',
+  },
+  header: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingHorizontal: 20,
+    paddingBottom: 50,
+  },
+  footer: {
+    flex: 3,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+  },
+  text_header: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 30,
+  },
+  text_footer: {
+    color: '#05375a',
+    fontSize: 20,
+    fontWeight: '400',
+    textAlign: 'center',
+  },
+  signIn: {
+    width: '100%',
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  textSign: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
